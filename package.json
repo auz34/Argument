@@ -1,0 +1,27 @@
+{
+  "name": "Argument",
+  "version": "0.0.1",
+  "description": "A helper for declaring your assumptions about method arguments",
+  "main": "argument.js",
+  "scripts": {
+    "test": "npm run test-node && npm run test-browser"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/auz34/Argument"
+  },
+  "keywords": [
+    "design by contract",
+    "arguments",
+    "assert"
+  ],
+  "author": "Andrew Zavgorodniy",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/auz34/Argument/issues"
+  },
+  "homepage": "https://github.com/auz34/Argument",
+  "devDependencies": {
+    "grunt": "~0.4.5"
+  }
+}
