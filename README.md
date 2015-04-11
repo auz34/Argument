@@ -1,8 +1,10 @@
 # Argument
 A helper for declaring your assumptions about method arguments.
 
-## Motivation
+## Usage
 
+## Motivation
+It is very easy to misuse javascript functions  
 
 ## Inspiration
 I had been using [Catel](http://catelproject.com) for some time and after some initial skepticism found their 
