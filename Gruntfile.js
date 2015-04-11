@@ -7,6 +7,7 @@ module.exports = function (grunt) {
      */
     grunt.loadNpmTasks('grunt-contrib-jshint');
     grunt.loadNpmTasks('grunt-contrib-watch');
+    grunt.loadNpmTasks('grunt-jasmine-node');
 
     var userConfig = require( './grunt.settings.js' );
     userConfig.pkg = grunt.file.readJSON('package.json');
@@ -20,7 +21,7 @@ module.exports = function (grunt) {
      */
 
     grunt.registerTask('checkAll',
-        ['jshint'/*,test-runner*/]);
+        ['jshint', 'jasmine_node'/*,test-runner*/]);
 
 
     grunt.registerTask('buildAll', [
