@@ -5,23 +5,28 @@
     var root = this;
 
     // Create a safe reference to the Argument function for use below.
-    var Argument = function(arg) {
-        if (!(this instanceof Argument)) {
-            return new Argument(arg);
-        }
-
+    var ArgumentClass = function(arg, caller) {
         this.arg = arg;
+        this.caller = caller;
+    };
+
+    ArgumentClass.prototype.resolveName = function() {
+        return '';
+    };
+
+    var argument = function(arg) {
+        return new ArgumentClass(arg, argument.caller);
     };
 
     // Export the Argument function for **Node.js**, with
     // backwards-compatibility for the old `require()` API. If we're in
     // the browser, add `Argument` as a global function.
     if (typeof module !== 'undefined' && module.exports) {
-        module.exports = Argument;
+        module.exports = argument;
     } else {
-        root.Argument = Argument;
+        root.argument = argument;
     }
 
     // Current version.
-    Argument.VERSION = '0.0.1';
+    argument.VERSION = '0.0.1';
 }.call());
