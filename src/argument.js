@@ -1,13 +1,11 @@
-'use strict';
-
 (function() {
     // Establish the root object, `window` in the browser, or `exports` on the server.
     var root = this;
 
     // Create a safe reference to the Argument function for use below.
-    var ArgumentClass = function(arg, caller) {
+    var ArgumentClass = function(arg, fnObject) {
         this.arg = arg;
-        this.caller = caller;
+        this.fnObject = fnObject;
     };
 
     ArgumentClass.prototype.resolveName = function() {
@@ -15,18 +13,22 @@
     };
 
     var argument = function(arg) {
-        return new ArgumentClass(arg, argument.caller);
+        return new ArgumentClass(arg);
     };
 
-    // Export the Argument function for **Node.js**, with
+    // Export the argument function for **Node.js**, with
     // backwards-compatibility for the old `require()` API. If we're in
-    // the browser, add `Argument` as a global function.
-    if (typeof module !== 'undefined' && module.exports) {
+    // the browser, add `argument` as a global function.
+    argument.isNode = (typeof module !== 'undefined' && module.exports);
+    argument.isBrowser = !argument.isNode;
+    if (argument.isNode) {
         module.exports = argument;
+
     } else {
         root.argument = argument;
     }
 
     // Current version.
     argument.VERSION = '0.0.1';
+
 }.call());
