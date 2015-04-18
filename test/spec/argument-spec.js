@@ -1,9 +1,28 @@
-'use strict';
-
-
 var argument = require('../../src/argument');
 
+describe('internals', function() {
+    it ('should have access to caller function in non strict mode', function() {
+        var arg = null;
+        (function someFunc(a) {
+            arg = argument(a);
+        })();
+
+        expect(arg.caller).toBeTruthy();
+    });
+
+    it ('should not define caller in strict mode', function() {
+        'use strict';
+        var arg = null;
+        (function someFunc(a) {
+            arg = argument(a);
+        })();
+
+        expect(arg.caller).toBeNull();
+    });
+});
+
 describe('basics', function() {
+    'use strict';
     it('should provide global Argument function', function() {
         expect(typeof argument).toEqual('function');
     });
