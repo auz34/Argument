@@ -32,6 +32,33 @@
         return '';
     };
 
+    // Thanks Angular team for regex'es and end ready example how to do it
+    // https://github.com/angular/angular.js/blob/master/src/auto/injector.js#L65-80
+    var FN_ARGS = /^function\s*[^\(]*\(\s*([^\)]*)\)/m;
+    var FN_ARG_SPLIT = /,/;
+    var FN_ARG = /^\s*(_?)(\S+?)\1\s*$/;
+    var STRIP_COMMENTS = /((\/\/.*$)|(\/\*[\s\S]*?\*\/))/mg;
+
+    ArgumentClass.prototype.getCallerInfo = function() {
+        var result = {
+            namedParameters: []
+        };
+
+        if (!this.caller) {
+            return {};
+        }
+
+        var fnText = this.caller.toString().replace(STRIP_COMMENTS, ''),
+            argDecl = fnText.match(FN_ARGS),
+            args = argDecl[1].split(FN_ARG_SPLIT);
+
+        for (var i=0; i<args.length; i++) {
+            result.namedParameters.push(args[i].trim());
+        }
+
+        return result;
+    };
+
 
     var argument = function(arg) {
         var caller  = isStrict(argument) ? null : argument.caller;

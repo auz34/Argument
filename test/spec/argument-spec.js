@@ -19,6 +19,16 @@ describe('internals', function() {
 
         expect(arg.caller).toBeNull();
     });
+
+    it ('should be able to extract list of arguments of the function', function() {
+        var arg = null;
+        (function someFunc(first, second, a, b) {
+            arg = argument(a);
+        })();
+        var funcInfo = arg.getCallerInfo();
+
+        expect(funcInfo.namedParameters).toBe(['first', 'second', 'a', 'b']);
+    });
 });
 
 describe('basics', function() {
