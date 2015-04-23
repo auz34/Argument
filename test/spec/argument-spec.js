@@ -37,7 +37,7 @@ describe('basics', function() {
         })();
     });
 
-    it('should throw error if there is no callback', function(done) {
+    it('should throw error if any error happens inside validation and there is no callback', function(done) {
         try{
             (function someFunc(a) {
                 args(someFunc, function() {
