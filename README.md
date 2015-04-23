@@ -3,6 +3,40 @@ A helper for declaring your assumptions about method arguments.
 
 ## Usage
 
+#### Browser style
+
+'''javascript
+function someFunction(a, b, c) {
+    args(someFunction, function(){
+        args.expect(a).toBeDefined();
+        args.expect(c).not.toBeTruthy();
+    });
+}
+'''
+
+#### The same with ES6 syntax
+'''javascript
+function someFunction(a, b, c) {
+    args(someFunction, () => {
+        args.expect(a).toBeDefined();
+        args.expect(c).not.toBeTruthy();
+    });
+}
+'''
+
+#### Node.js asynchronous callback style (not recommended)
+'''javascript
+function someFunction(a, b, c, success, err) {
+    if (args(someFunction, 
+             function(){ 
+                args.expect(a).toBeDefined();
+             }, 
+             err)) {
+        return;
+    }
+}
+'''
+
 ## Motivation
 It is very easy to misuse javascript functions  
 
