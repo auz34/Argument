@@ -1,7 +1,22 @@
 'use strict';
-var args = require('../../src/argument');
+var argslib = require('../../src/argument'),
+    args = argslib.args,
+    ArgumentError = argslib.ArgumentError;
 
 describe('basics', function() {
+    beforeEach(function() {
+        this.addMatchers({
+            toBeInstanceOf: function(expectedInstance) {
+                var actual = this.actual;
+                var notText = this.isNot ? ' not' : '';
+                this.message = function() {
+                    return 'Expected ' + actual.constructor.name + notText + ' is instance of ' + expectedInstance.name;
+                };
+                return actual instanceof expectedInstance;
+            }
+        });
+    });
+
     it('should provide global args function', function() {
         expect(typeof args).toEqual('function');
     });
@@ -11,13 +26,29 @@ describe('basics', function() {
     });
 
     it('should call callback if any error happens inside validation', function(done) {
-        var callback = function() {
-          done();
+        var callback = function(error) {
+            expect(error).toBeInstanceOf(ArgumentError);
+            done();
         };
         (function someFunc(a) {
             args(someFunc, function() {
                 throw new Error('Intentional error');
-            }, callback)
+            }, callback);
         })();
     });
+
+    it('should throw error if there is no callback', function(done) {
+        try{
+            (function someFunc(a) {
+                args(someFunc, function() {
+                    throw new Error('Intentional error');
+                });
+            })();
+        } catch(error){
+            expect(error).toBeInstanceOf(ArgumentError);
+            done();
+        }
+    });
+
+
 });

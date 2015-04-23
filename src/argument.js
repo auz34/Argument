@@ -8,6 +8,12 @@
     var _isNode = (typeof module !== 'undefined' && module.exports);
     var _isBrowser = !_isNode;
 
+    function ArgumentError() {
+    }
+
+    ArgumentError.prototype = Object.create(Error.prototype);
+    ArgumentError.prototype.constructor = ArgumentError;
+
     // Thanks Angular team for regex'es and ready example how to do it
     // https://github.com/angular/angular.js/blob/master/src/auto/injector.js#L65-80
     var FN_ARGS = /^function\s*[^\(]*\(\s*([^\)]*)\)/m;
@@ -29,9 +35,11 @@
     };
 
     if (_isNode) {
-        module.exports = args;
+        module.exports.args = args;
+        module.exports.ArgumentError = ArgumentError;
     } else {
         root.args = args;
+        root.ArgumentError = ArgumentError;
     }
 
     // Current version.
