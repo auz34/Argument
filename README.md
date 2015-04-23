@@ -5,27 +5,27 @@ A helper for declaring your assumptions about method arguments.
 
 #### Browser style
 
-'''javascript
+```javascript
 function someFunction(a, b, c) {
     args(someFunction, function(){
         args.expect(a).toBeDefined();
         args.expect(c).not.toBeTruthy();
     });
 }
-'''
+```
 
 #### The same with ES6 syntax
-'''javascript
+```javascript
 function someFunction(a, b, c) {
     args(someFunction, () => {
         args.expect(a).toBeDefined();
         args.expect(c).not.toBeTruthy();
     });
 }
-'''
+```
 
 #### Node.js asynchronous callback style (not recommended)
-'''javascript
+```javascript
 function someFunction(a, b, c, success, err) {
     if (args(someFunction, 
              function(){ 
@@ -35,7 +35,7 @@ function someFunction(a, b, c, success, err) {
         return;
     }
 }
-'''
+```
 
 ## Motivation
 It is very easy to misuse javascript functions  
