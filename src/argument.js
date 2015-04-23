@@ -8,7 +8,7 @@
     var _isNode = (typeof module !== 'undefined' && module.exports);
     var _isBrowser = !_isNode;
 
-    function ArgumentError() {
+    function ArgumentError(originalError, validatedFunction, validator) {
     }
 
     ArgumentError.prototype = Object.create(Error.prototype);
@@ -25,9 +25,13 @@
         try{
             validator();
         } catch (err) {
+            var wrapperError = new ArgumentError(err, func, validator);
             if (callback) {
-                callback(err);
+                callback(wrapperError);
+                return;
             }
+
+            throw wrapperError;
         }
     };
 
