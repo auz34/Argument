@@ -8,18 +8,31 @@
     var _isNode = (typeof module !== 'undefined' && module.exports);
     var _isBrowser = !_isNode;
 
-    function ArgumentError(originalError, validatedFunction, validator) {
-    }
-
-    ArgumentError.prototype = Object.create(Error.prototype);
-    ArgumentError.prototype.constructor = ArgumentError;
-
     // Thanks Angular team for regex'es and ready example how to do it
     // https://github.com/angular/angular.js/blob/master/src/auto/injector.js#L65-80
     var FN_ARGS = /^function\s*[^\(]*\(\s*([^\)]*)\)/m;
     var FN_ARG_SPLIT = /,/;
     var FN_ARG = /^\s*(_?)(\S+?)\1\s*$/;
     var STRIP_COMMENTS = /((\/\/.*$)|(\/\*[\s\S]*?\*\/))/mg;
+
+    function ArgumentError(originalError, validatedFunction, validator) {
+        // collect information about function arguments of which are being validated
+        this.caller = {
+            name: validatedFunction.name,
+            parameters: []
+        };
+
+        var fnText = validatedFunction.toString().replace(STRIP_COMMENTS, ''),
+            argDecl = fnText.match(FN_ARGS),
+            args = argDecl[1].split(FN_ARG_SPLIT);
+
+        for (var i=0; i<args.length; i++) {
+            this.caller.parameters.push(args[i].trim());
+        }
+    }
+
+    ArgumentError.prototype = Object.create(Error.prototype);
+    ArgumentError.prototype.constructor = ArgumentError;
 
     var args = function(func, validator, callback) {
         try{

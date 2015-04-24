@@ -50,7 +50,7 @@ describe('basics', function() {
         }
     });
 
-    it('should provide name of the subject function if applicable', function(done) {
+    it('should provide name of the subject function if applicable and validation fails', function(done) {
         try{
             (function someFunc(a) {
                 args(someFunc, function() {
@@ -60,6 +60,19 @@ describe('basics', function() {
         } catch(error){
             expect(error.caller).toBeTruthy();
             expect(error.caller.name).toBe('someFunc');
+            done();
+        }
+    });
+
+    it('should provide list of named parameters of named function', function(done) {
+        try{
+            (function someFunc(first, second, anotherParam) {
+                args(someFunc, function() {
+                    throw new Error('Intentional error');
+                });
+            })();
+        } catch(error){
+            expect(error.caller.parameters).toEqual(['first', 'second', 'anotherParam']);
             done();
         }
     });
