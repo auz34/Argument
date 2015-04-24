@@ -73,5 +73,19 @@ describe('basics', function() {
         }
     });
 
+    it('should provide list of named parameters of unnamed function', function() {
+        try {
+            var obj = {
+                someFunc: function(first, second, anotherParam) {
+                    args(obj.someFunc, function() {
+                        throw new Error('Intentional error');
+                    });
+                }
+            }
 
+            obj.someFunc();
+        } catch(error){
+            expect(error.caller.parameters).toEqual(['first', 'second', 'anotherParam']);
+        }
+    });
 });
