@@ -25,10 +25,9 @@ describe('basics', function() {
         expect(typeof args.expect).toEqual('function');
     });
 
-    it('should call callback if any error happens inside validation', function(done) {
+    it('should call callback if any error happens inside validation', function() {
         var callback = function(error) {
             expect(error).toBeInstanceOf(ArgumentError);
-            done();
         };
         (function someFunc(a) {
             args(someFunc, function() {
@@ -37,7 +36,7 @@ describe('basics', function() {
         })();
     });
 
-    it('should throw error if any error happens inside validation and there is no callback', function(done) {
+    it('should throw error if any error happens inside validation and there is no callback', function() {
         try{
             (function someFunc(a) {
                 args(someFunc, function() {
@@ -46,11 +45,10 @@ describe('basics', function() {
             })();
         } catch(error){
             expect(error).toBeInstanceOf(ArgumentError);
-            done();
         }
     });
 
-    it('should provide name of the subject function if applicable and validation fails', function(done) {
+    it('should provide name of the subject function if applicable and validation fails', function() {
         try{
             (function someFunc(a) {
                 args(someFunc, function() {
@@ -60,11 +58,10 @@ describe('basics', function() {
         } catch(error){
             expect(error.caller).toBeTruthy();
             expect(error.caller.name).toBe('someFunc');
-            done();
         }
     });
 
-    it('should provide list of named parameters of named function', function(done) {
+    it('should provide list of named parameters of named function', function() {
         try{
             (function someFunc(first, second, anotherParam) {
                 args(someFunc, function() {
@@ -73,7 +70,6 @@ describe('basics', function() {
             })();
         } catch(error){
             expect(error.caller.parameters).toEqual(['first', 'second', 'anotherParam']);
-            done();
         }
     });
 
