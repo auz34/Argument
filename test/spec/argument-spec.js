@@ -50,5 +50,19 @@ describe('basics', function() {
         }
     });
 
+    it('should provide name of the subject function if applicable', function(done) {
+        try{
+            (function someFunc(a) {
+                args(someFunc, function() {
+                    throw new Error('Intentional error');
+                });
+            })();
+        } catch(error){
+            expect(error.caller).toBeTruthy();
+            expect(error.caller.name).toBe('someFunc');
+            done();
+        }
+    });
+
 
 });
