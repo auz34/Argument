@@ -46,3 +46,5 @@ I had been using [Catel](http://catelproject.com) for some time and after some i
 extremely useful. In fact I am really convinced that such partial 
 [design by contract](http://en.wikipedia.org/wiki/Design_by_contract) at arguments level is even more important for 
 such nonrestrictive language as Javascript. 
+
+Assertions code for args.expect was heavily borrowed from [Jasmine](https://github.com/jasmine/jasmine) 

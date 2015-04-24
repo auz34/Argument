@@ -6,7 +6,7 @@ module.exports = {
      * `js` is all project javascript except of 3rd party .
      */
     lib_files: {
-        js: [ 'src/*.js'],
+        js: [ 'src/**/*.js'],
         jsunit: [ 'test/spec/**/*.js' ]
     },
 

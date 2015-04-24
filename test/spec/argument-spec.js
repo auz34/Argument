@@ -81,7 +81,7 @@ describe('basics', function() {
                         throw new Error('Intentional error');
                     });
                 }
-            }
+            };
 
             obj.someFunc();
         } catch(error){
