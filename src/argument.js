@@ -1,6 +1,7 @@
 (function() {
     // Establish the root object, `window` in the browser, or `exports` on the server.
     var root = this;
+    var expectation = require('./expectation/Expectation');
 
     // Export the argument function for **Node.js**, with
     // backwards-compatibility for the old `require()` API. If we're in
@@ -49,6 +50,10 @@
     };
 
     args.expect = function(value) {
+        return expectation({
+            actual: value,
+            customMatchers: args.CustomMatchers
+        });
     };
 
     if (_isNode) {

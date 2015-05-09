@@ -1,10 +1,21 @@
 var coreMatchers = {
-    toBe: require('matchers/toBe')
+    toBe: require('./matchers/toBe'),
+    toBeDefined: require('./matchers/toBeDefined')
 };
 
 function Expectation(options) {
     this.actual = options.actual;
 
+    this.isNot = options.isNot;
+    // TODO add core matchers to the prototype instead of adding it to the current instance
+    for (var matcherName in coreMatchers) {
+        this[matcherName] = Expectation.prototype.wrapCompare(matcherName, coreMatchers[matcherName]);
+    }
+
+    var customMatchers = options.customMatchers || {};
+    for (var matcherName in customMatchers) {
+        this[matcherName] = Expectation.prototype.wrapCompare(matcherName, customMatchers[matcherName]);
+    }
 }
 
 Expectation.prototype.print = function(value) {
@@ -38,49 +49,59 @@ Expectation.prototype.buildFailureMessage = function() {
 };
 
 Expectation.prototype.wrapCompare = function(name, matcherFactory) {
-    var args = Array.prototype.slice.call(arguments, 0),
-        expected = args.slice(0),
-        message = '';
+    return function() {
+        var args = Array.prototype.slice.call(arguments, 0),
+            expected = args.slice(0),
+            message = '';
 
-    args.unshift(this.actual);
+        args.unshift(this.actual);
 
-    var matcher = matcherFactory(),
-        matcherCompare = matcher.compare;
+        var matcher = matcherFactory(),
+            matcherCompare = matcher.compare;
 
-    function defaultNegativeCompare() {
-        var result = matcher.compare.apply(null, args);
-        result.pass = !result.pass;
-        return result;
-    }
+        function defaultNegativeCompare() {
+            var result = matcher.compare.apply(null, args);
+            result.pass = !result.pass;
+            return result;
+        }
 
-    if (this.isNot) {
-        matcherCompare = matcher.negativeCompare || defaultNegativeCompare;
-    }
+        if (this.isNot) {
+            matcherCompare = matcher.negativeCompare || defaultNegativeCompare;
+        }
 
-    var result = matcherCompare.apply(null, args);
+        var result = matcherCompare.apply(null, args);
 
-    if (!result.pass) {
-        if (!result.message) {
-            args.unshift(this.isNot);
-            args.unshift(name);
-            message = this.util.buildFailureMessage.apply(null, args);
-        } else {
-            if (Object.prototype.toString.apply(result.message) === '[object Function]') {
-                message = result.message();
+        if (!result.pass) {
+            if (!result.message) {
+                args.unshift(this.isNot);
+                args.unshift(name);
+                message = this.util.buildFailureMessage.apply(null, args);
             } else {
-                message = result.message;
+                if (Object.prototype.toString.apply(result.message) === '[object Function]') {
+                    message = result.message();
+                } else {
+                    message = result.message;
+                }
             }
         }
-    }
 
-    if (expected.length === 1) {
-        expected = expected[0];
-    }
+        if (expected.length === 1) {
+            expected = expected[0];
+        }
 
-    this.addExpectationResult(name, result);
+        this.addExpectationResult(name, result);
+    }
 };
 
 Expectation.prototype.addExpectationResult = function(name, result) {
 
+};
+
+module.exports = function(options) {
+    var expect = new Expectation(options);
+    options.isNot = true;
+    expect.not = new Expectation(options);
+
+    return expect;
 };
 
