@@ -18,7 +18,6 @@ function Expectation(options) {
     }
 
     this.reporters = options.reporters || [];
-    this.verbose = options.verbose;
 }
 
 Expectation.prototype.print = function(value) {
