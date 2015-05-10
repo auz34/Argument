@@ -1,5 +1,5 @@
 var unit = require('../../../src/expectation/matchers/toBeDefined'),
-    toBeDefined = unit()().compare;
+    toBeDefined = unit().compare;
 
 describe('toBeDefined', function() {
     it('should pass when actual isn\'t equal undefined', function() {
