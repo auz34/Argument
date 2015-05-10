@@ -8,14 +8,17 @@ function Expectation(options) {
 
     this.isNot = options.isNot;
     // TODO add core matchers to the prototype instead of adding it to the current instance
-    for (var matcherName in coreMatchers) {
-        this[matcherName] = Expectation.prototype.wrapCompare(matcherName, coreMatchers[matcherName]);
+    for (var coreMatcherName in coreMatchers) {
+        this[coreMatcherName] = Expectation.prototype.wrapCompare(coreMatcherName, coreMatchers[coreMatcherName]);
     }
 
     var customMatchers = options.customMatchers || {};
-    for (var matcherName in customMatchers) {
-        this[matcherName] = Expectation.prototype.wrapCompare(matcherName, customMatchers[matcherName]);
+    for (var customMatcherName in customMatchers) {
+        this[customMatcherName] = Expectation.prototype.wrapCompare(customMatcherName, customMatchers[customMatcherName]);
     }
+
+    this.reporters = options.reporters || [];
+    this.verbose = options.verbose;
 }
 
 Expectation.prototype.print = function(value) {
@@ -75,7 +78,7 @@ Expectation.prototype.wrapCompare = function(name, matcherFactory) {
             if (!result.message) {
                 args.unshift(this.isNot);
                 args.unshift(name);
-                message = this.util.buildFailureMessage.apply(null, args);
+                message = this.buildFailureMessage.apply(null, args);
             } else {
                 if (Object.prototype.toString.apply(result.message) === '[object Function]') {
                     message = result.message();
@@ -89,12 +92,13 @@ Expectation.prototype.wrapCompare = function(name, matcherFactory) {
             expected = expected[0];
         }
 
-        this.addExpectationResult(name, result);
-    }
-};
-
-Expectation.prototype.addExpectationResult = function(name, result) {
-
+        for (var i=0; i < this.reporters.length; i++) {
+            var reporter = this.reporters[i];
+            if (typeof reporter === 'function'){
+                reporter(result);
+            }
+        }
+    };
 };
 
 module.exports = function(options) {
