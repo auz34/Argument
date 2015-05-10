@@ -1,5 +1,5 @@
 var unit = require('../../../src/expectation/matchers/toBe'),
-    toBe = unit()().compare;
+    toBe = unit().compare;
 
 describe('toBe', function() {
     it('should return pass when actual strictly equal to expected', function() {
