@@ -89,3 +89,20 @@ describe('basics', function() {
         }
     });
 });
+
+describe('main use cases', function(){
+    it('should go forward if all parameters are ok', function(){
+        var a;
+        (function someFunc(first, second, anotherParam) {
+            args(someFunc, function() {
+                args.expect(first).toBe(5);
+                args.expect(second).toBe('a');
+                args.expect(anotherParam).toBeDefined();
+            });
+
+            a=7;
+        })(5,'a',{});
+
+        expect(a).toBe(7);
+    });
+});

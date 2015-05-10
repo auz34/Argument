@@ -16,12 +16,14 @@
     var FN_ARG = /^\s*(_?)(\S+?)\1\s*$/;
     var STRIP_COMMENTS = /((\/\/.*$)|(\/\*[\s\S]*?\*\/))/mg;
 
-    function ArgumentError(originalError, validatedFunction, validator) {
+    function ArgumentError(originalError, validatedFunction, validationErrors) {
         // collect information about function arguments of which are being validated
         this.caller = {
             name: validatedFunction.name,
             parameters: []
         };
+
+        this.validationErrors = validationErrors;
 
         var fnText = validatedFunction.toString().replace(STRIP_COMMENTS, ''),
             argDecl = fnText.match(FN_ARGS),
@@ -35,24 +37,41 @@
     ArgumentError.prototype = Object.create(Error.prototype);
     ArgumentError.prototype.constructor = ArgumentError;
 
+    var results;
     var args = function(func, validator, callback) {
-        try{
+        var error;
+        try {
+            results = [];
             validator();
+            if (results.length > 0){
+                error = new ArgumentError(null, func, null);
+            }
         } catch (err) {
-            var wrapperError = new ArgumentError(err, func, validator);
+            error = new ArgumentError(err, func, null);
+        }
+
+        if (error) {
             if (callback) {
-                callback(wrapperError);
+                callback(error);
                 return;
             }
 
-            throw wrapperError;
+            throw error;
+        }
+    };
+
+    var reporter = function(result) {
+        if (!result.pass) {
+            results.push(result);
         }
     };
 
     args.expect = function(value) {
+
         return expectation({
             actual: value,
-            customMatchers: args.CustomMatchers
+            customMatchers: args.CustomMatchers,
+            reporters: [reporter]
         });
     };
 
