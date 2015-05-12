@@ -9,6 +9,13 @@
     var _isNode = (typeof module !== 'undefined' && module.exports);
     var _isBrowser = !_isNode;
 
+    var stackParser = null;
+    if (_isNode) {
+        stackParser = require('../node_modules/error-stack-parser/error-stack-parser');
+    } else {
+        stackParser = ErrorStackParser;
+    }
+
     // Thanks Angular team for regex'es and ready example how to do it
     // https://github.com/angular/angular.js/blob/master/src/auto/injector.js#L65-80
     var FN_ARGS = /^function\s*[^\(]*\(\s*([^\)]*)\)/m;
@@ -44,6 +51,8 @@
             results = [];
             validator();
             if (results.length > 0){
+                var s = JSON.stringify(results[0]);
+                console.log(s);
                 error = new ArgumentError(null, func, null);
             }
         } catch (err) {
@@ -60,14 +69,18 @@
         }
     };
 
-    var reporter = function(result) {
-        if (!result.pass) {
-            results.push(result);
+    var reporter = function(expectResult) {
+        if (expectResult.pass) {
+            return;
         }
+
+        results.push({
+            expectResult: expectResult,
+            stack: stackParser.parse(new Error('instrumental error'))
+        });
     };
 
     args.expect = function(value) {
-
         return expectation({
             actual: value,
             customMatchers: args.CustomMatchers,

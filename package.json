@@ -28,5 +28,8 @@
     "jshint-stylish": "~1.0.1",
     "jasmine-node": "~1.14.5",
     "grunt-jasmine-node": "~0.3.1"
+  },
+  "dependencies": {
+    "error-stack-parser": "^1.2.0"
   }
 }
