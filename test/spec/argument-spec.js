@@ -105,4 +105,14 @@ describe('main use cases', function(){
 
         expect(a).toBe(7);
     });
+
+    it('should throw exception if argument is wrong', function(){
+        function someFunc(param) {
+            args(someFunc, function() {
+                args.expect(param).toBe(5);
+            });
+        }
+
+        expect(function() {someFunc(1);}).toThrow();
+    });
 });
